@@ -127,7 +127,7 @@ the sample is small and comes from a single day. A larger multi-month evaluation
 Requires Python 3.10+. Exact numbers can differ slightly across PyTorch versions and hardware.
 
 ```bash
-git clone https://github.com/<your-username>/pharmaceutical-ai-safety-engine.git
+git clone https://github.com/ilianamexi/pharmaceutical-ai-safety-engine.git
 cd pharmaceutical-ai-safety-engine
 pip install -r requirements.txt
 
