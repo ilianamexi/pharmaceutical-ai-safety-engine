@@ -1,0 +1,168 @@
+{
+  "dataset": "Stanford BioSNAP ChCh-Miner (DrugBank-derived DDI network)",
+  "num_nodes": 1514,
+  "num_undirected_edges": 48514,
+  "split": {
+    "train": 0.8,
+    "val": 0.1,
+    "test": 0.1
+  },
+  "negatives": "random non-edges, 1:1 with positives",
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "gnn_test": {
+    "auroc": {
+      "mean": 0.9585951182381963,
+      "std": 0.0018700360950373112
+    },
+    "auprc": {
+      "mean": 0.9574361467944886,
+      "std": 0.002887416086171378
+    }
+  },
+  "baselines_test": {
+    "preferential_attachment": {
+      "auroc": {
+        "mean": 0.8819940953816149,
+        "std": 0.0014583639924102862
+      },
+      "auprc": {
+        "mean": 0.8664626944246289,
+        "std": 0.0027816090335860415
+      }
+    },
+    "common_neighbors": {
+      "auroc": {
+        "mean": 0.9088874573752507,
+        "std": 0.0015507404092257276
+      },
+      "auprc": {
+        "mean": 0.8954345096469876,
+        "std": 0.0032224165944903095
+      }
+    },
+    "adamic_adar": {
+      "auroc": {
+        "mean": 0.9108704989672094,
+        "std": 0.001644656540831326
+      },
+      "auprc": {
+        "mean": 0.899702819849561,
+        "std": 0.003135703082411356
+      }
+    }
+  },
+  "runs": [
+    {
+      "seed": 42,
+      "best_epoch": 308,
+      "val": {
+        "auroc": 0.9624194098971023,
+        "auprc": 0.9644938101893654
+      },
+      "test": {
+        "auroc": 0.9607574531596088,
+        "auprc": 0.9607884065222339,
+        "auroc_95ci": [
+          0.9568845820444674,
+          0.9645323226230307
+        ],
+        "n_pos": 4851,
+        "n_neg": 4851
+      },
+      "baselines_test": {
+        "preferential_attachment": {
+          "auroc": 0.8837595344353892,
+          "auprc": 0.8700811095227472
+        },
+        "common_neighbors": {
+          "auroc": 0.9110449762009086,
+          "auprc": 0.8999876918271958
+        },
+        "adamic_adar": {
+          "auroc": 0.9131886345862843,
+          "auprc": 0.904126343631319
+        }
+      }
+    },
+    {
+      "seed": 43,
+      "best_epoch": 271,
+      "val": {
+        "auroc": 0.9584805093242236,
+        "auprc": 0.9584028601613823
+      },
+      "test": {
+        "auroc": 0.9561953214661051,
+        "auprc": 0.953740729056061,
+        "auroc_95ci": [
+          0.9521018302214699,
+          0.9600717768948872
+        ],
+        "n_pos": 4851,
+        "n_neg": 4851
+      },
+      "baselines_test": {
+        "preferential_attachment": {
+          "auroc": 0.8820347701432603,
+          "auprc": 0.8659900224556698
+        },
+        "common_neighbors": {
+          "auroc": 0.9074680689664346,
+          "auprc": 0.8933233032237794
+        },
+        "adamic_adar": {
+          "auroc": 0.9095470287713417,
+          "auprc": 0.8977617584310347
+        }
+      }
+    },
+    {
+      "seed": 44,
+      "best_epoch": 279,
+      "val": {
+        "auroc": 0.9591615335939039,
+        "auprc": 0.9585979988356819
+      },
+      "test": {
+        "auroc": 0.958832580088875,
+        "auprc": 0.9577793048051713,
+        "auroc_95ci": [
+          0.954890131166763,
+          0.9627482362848393
+        ],
+        "n_pos": 4851,
+        "n_neg": 4851
+      },
+      "baselines_test": {
+        "preferential_attachment": {
+          "auroc": 0.8801879815661952,
+          "auprc": 0.8633169512954697
+        },
+        "common_neighbors": {
+          "auroc": 0.908149326958409,
+          "auprc": 0.8929925338899871
+        },
+        "adamic_adar": {
+          "auroc": 0.9098758335440021,
+          "auprc": 0.8972203574863293
+        }
+      }
+    }
+  ],
+  "config": {
+    "embedding_dim": 64,
+    "hidden_channels": 64,
+    "out_channels": 32,
+    "dropout": 0.2,
+    "learning_rate": 0.01,
+    "weight_decay": 0.0,
+    "max_epochs": 500,
+    "patience": 50,
+    "val_ratio": 0.1,
+    "test_ratio": 0.1
+  }
+}

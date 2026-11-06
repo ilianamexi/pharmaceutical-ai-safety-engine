@@ -1,0 +1,61 @@
+project:
+  name: "PharmAI Safety Engine"
+  version: "0.3.0"
+  seed: 42
+
+paths:
+  ddi_edges: "data/knowledge_graph/real_ddi_edges.csv"
+  openfda_raw: "data/raw/openfda_events.jsonl"
+  drugbank_vocabulary: "data/external/drugbank_vocabulary.csv"   # optional, see README
+  models_dir: "models"
+  results_dir: "results"
+
+openfda:
+  # Reports received in this date window are fetched (YYYYMMDD).
+  date_from: "20230101"
+  date_to: "20241231"
+  n_reports: 10000          # openFDA returns max 1000 per request
+  page_size: 1000
+  sleep_seconds: 0.5        # be polite to the public API
+  api_key_env: "OPENFDA_API_KEY"   # required by openFDA; free key, read from this env variable
+
+gnn:
+  embedding_dim: 64         # ChCh-Miner has no node features -> learnable embeddings
+  hidden_channels: 64
+  out_channels: 32
+  dropout: 0.2
+  learning_rate: 0.01
+  weight_decay: 0.0
+  max_epochs: 500
+  patience: 50              # early stopping on validation AUROC
+  val_ratio: 0.10
+  test_ratio: 0.10
+
+risk_model:
+  target: "serious"         # one of: serious | death | hospitalization
+  top_k_drugs: 500          # multi-hot vocabulary sizes (fit on the training split only)
+  top_k_reactions: 500
+  features: ["drugs", "reactions", "demographics", "gnn"]   # optional: "text"
+  # Reaction terms removed from the features when they trivially reveal the target.
+  leakage_reaction_terms:
+    death: ["death", "sudden death", "cardiac death", "brain death", "sudden cardiac death", "completed suicide"]
+    hospitalization: ["hospitalisation"]
+    serious: []
+  val_ratio: 0.15
+  test_ratio: 0.15
+  hidden_dim: 128
+  dropout: 0.3
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  batch_size: 256
+  max_epochs: 100
+  patience: 10
+  # Small grid searched on the VALIDATION split only.
+  focal_alpha_grid: [0.25, 0.5, 0.75]
+  focal_gamma_grid: [1.0, 2.0]
+  bootstrap_iterations: 1000
+
+nlp:
+  model_name: "dmis-lab/biobert-v1.1"
+  max_length: 128
+  batch_size: 32

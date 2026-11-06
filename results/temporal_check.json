@@ -1,0 +1,17 @@
+{
+  "n": 200,
+  "prevalence": 0.455,
+  "auroc": 0.8601673555801995,
+  "auprc": 0.8652922168304608,
+  "threshold": 0.222,
+  "precision": 0.6608695652173913,
+  "recall": 0.8351648351648352,
+  "f1": 0.7378640776699029,
+  "auroc_95ci": [
+    0.7969686798696086,
+    0.9061074526260334
+  ],
+  "model": "mlp_focal",
+  "data": "openFDA reports received 2025-01-01 (not used in training)",
+  "source_file": "results/triage_output.csv"
+}
