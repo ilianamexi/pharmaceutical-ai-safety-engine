@@ -27,17 +27,30 @@ from message passing during training. Negatives are random non-interacting drug 
 scorer has AUROC ≈ AUPRC ≈ 0.5. Mean ± std over 3 seeds (42, 43, 44); full output in
 [`results/gnn_metrics.json`](results/gnn_metrics.json).
 
-| Method (test set)                     | AUROC             | AUPRC             |
-|---------------------------------------|-------------------|-------------------|
-| **GCN (2 layers, learnable embeddings)** | **0.959 ± 0.002** | **0.957 ± 0.003** |
-| Adamic–Adar                           | 0.911             | 0.900             |
-| Common neighbours                     | 0.909             | 0.895             |
-| Preferential attachment (degree product) | 0.882          | 0.866             |
+Two evaluation protocols use the same held-out positive edges:
 
-Per-seed 95% bootstrap CI for the GCN test AUROC: 0.957–0.965 (seed 42).
-The heuristic baselines are strong because random negatives are "easy" and the network is dense
-around high-degree drugs. The GCN improves on them by about 4.8 AUROC points
-(0.959 − 0.911 = 0.048).
+- **Random negatives:** random non-interacting drug pairs. This is the standard protocol, but it is
+  easy, because a random pair usually involves rarely-interacting drugs.
+- **Degree-matched negatives (harder):** for each positive pair, one drug is kept and the other is
+  replaced by a drug sampled in proportion to its number of interactions. The negative drugs are then
+  as "popular" as the positive ones, so a model cannot score well just by recognising high-degree drugs.
+
+| Method (test AUROC / AUPRC)              | Random negatives            | Degree-matched negatives    |
+|------------------------------------------|-----------------------------|-----------------------------|
+| **GCN (2 layers, learnable embeddings)** | **0.959 ± 0.002 / 0.957**   | **0.901 ± 0.002 / 0.875**   |
+| Adamic–Adar                              | 0.911 / 0.900               | 0.692 / 0.667               |
+| Common neighbours                        | 0.909 / 0.895               | 0.690 / 0.664               |
+| Preferential attachment (degree product) | 0.882 / 0.866               | 0.524 / 0.517               |
+
+![ROC curves for DDI prediction](results/figures/ddi_roc.png)
+
+- **With random negatives,** even the degree-only baseline reaches 0.882 AUROC. Most of that signal
+  is node popularity.
+- **With degree-matched negatives,** preferential attachment falls to chance (0.524) and the
+  neighbourhood heuristics fall to about 0.69. The GCN keeps 0.901 AUROC (95% bootstrap CI
+  0.897–0.909 for seed 42). It has learned interaction structure beyond drug popularity.
+- **Seeds:** values are the mean over 3 seeds. The GCN's ± is the standard deviation; for the
+  baselines it is at most 0.004.
 
 ### 2. Adverse-event seriousness prediction (openFDA FAERS)
 
@@ -141,8 +154,14 @@ python -m src.gnn.train_ddi_gnn
 # 3. Train + evaluate the seriousness models
 python -m src.models.train_risk_model
 
-# 4. Triage NEW reports from a period the models never saw
+# 4. Temporal validation on later months (Jan–Jun 2025 by default) + figures
+python -m src.models.temporal_eval
+
+# 5. Triage demo on new reports
 python -m src.pipeline --fetch 20250101 20250131 --n 200
+
+# Re-draw all figures in results/figures/
+python -m src.utils.plots
 
 # Tests
 python -m pytest -q
@@ -172,11 +191,13 @@ pharmaceutical-ai-safety-engine/
 │   ├── models/
 │   │   ├── focal_risk_engine.py    # focal loss + MLP
 │   │   ├── features.py             # feature blocks (fitted on train split only)
-│   │   └── train_risk_model.py     # LogReg / BCE / focal comparison, bootstrap CIs, ablation
+│   │   ├── train_risk_model.py     # LogReg / BCE / focal comparison, bootstrap CIs, ablation
+│   │   └── temporal_eval.py        # month-by-month validation on reports after the training window
 │   ├── nlp/biobert_embedder.py     # optional BioBERT mean-pooled embeddings
+│   ├── utils/plots.py              # ROC / PR / temporal figures
 │   └── pipeline.py                 # triage demo on new reports
 ├── tests/                          # unit + end-to-end tests (synthetic fixtures only)
-└── results/                        # metrics JSON (GNN, seriousness model, temporal check)
+└── results/                        # metrics JSON, test predictions and figures/
 ```
 
 ---
@@ -188,9 +209,9 @@ pharmaceutical-ai-safety-engine/
 - **Outcome-like reaction terms.** Some MedDRA terms ("death", "hospitalisation") almost define the
   `serious` flag. They are kept for the `serious` target because they are known at case intake, but they
   make part of the task easy. They are removed automatically for the `death` / `hospitalization` targets.
-- **Random negative sampling** in DDI evaluation is optimistic. Harder protocols (degree-matched negatives,
-  held-out drugs, time-based splits) would give lower numbers. The model is transductive: it cannot score
-  drugs that are not in the BioSNAP graph.
+- **DDI evaluation:** random negatives are optimistic, which is why degree-matched negatives are also
+  reported. Even harder settings (drugs never seen in training, time-based splits) are not covered:
+  the model is transductive and cannot score drugs that are not in the BioSNAP graph.
 - **BioSNAP ChCh-Miner** is a static DrugBank snapshot. A missing edge means "not recorded", not "safe".
 - **Drug mapping** to DrugBank uses exact name/synonym/UNII matching after salt removal, with a
   community-curated (Wikidata) vocabulary. Mentions that

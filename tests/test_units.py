@@ -105,3 +105,27 @@ def test_wikidata_vocabulary_parsing(tmp_path):
     assert m.map_drug({"name": "ACETYLSALICYLIC ACID"}) == ["DB00945"]
     assert m.map_drug({"name": "?", "unii": ["R16CO5Y76E"]}) == ["DB00945"]
     assert m.map_drug({"name": "WARFARIN SODIUM"}) == ["DB00682"]
+
+
+def test_degree_matched_negatives_are_valid_non_edges():
+    from src.gnn.train_ddi_gnn import degree_matched_negatives
+    from torch_geometric.utils import to_undirected
+
+    torch.manual_seed(1)
+    ei = to_undirected(torch.randint(0, 100, (2, 600)), num_nodes=100)
+    ei = ei[:, ei[0] != ei[1]]
+    pos = ei[:, :50]
+    neg = degree_matched_negatives(pos, ei, ei, 100, seed=0)
+    known = set(map(tuple, ei.t().tolist()))
+    assert neg.shape == pos.shape
+    assert all(tuple(e) not in known and e[0] != e[1] for e in neg.t().tolist())
+    # every negative keeps one endpoint of its positive
+    assert all(set(p) & set(n) for p, n in zip(pos.t().tolist(), neg.t().tolist()))
+
+
+def test_month_windows_cover_month():
+    from src.models.temporal_eval import month_windows
+
+    assert month_windows("202502") == [("20250201", "20250207"), ("20250208", "20250214"),
+                                       ("20250215", "20250221"), ("20250222", "20250228")]
+    assert month_windows("202403")[-1] == ("20240322", "20240331")

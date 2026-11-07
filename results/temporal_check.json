@@ -1,17 +1,128 @@
 {
-  "n": 200,
-  "prevalence": 0.455,
-  "auroc": 0.8601673555801995,
-  "auprc": 0.8652922168304608,
-  "threshold": 0.222,
-  "precision": 0.6608695652173913,
-  "recall": 0.8351648351648352,
-  "f1": 0.7378640776699029,
-  "auroc_95ci": [
-    0.7969686798696086,
-    0.9061074526260334
-  ],
+  "description": "Model trained on reports received in the training window, scored on later months; threshold fixed on the in-period validation split; reports already in training removed.",
   "model": "mlp_focal",
-  "data": "openFDA reports received 2025-01-01 (not used in training)",
-  "source_file": "results/triage_output.csv"
+  "target": "serious",
+  "threshold": 0.42567333579063416,
+  "training_window": [
+    "20230101",
+    "20241231"
+  ],
+  "reports_requested_per_month": 1000,
+  "in_period_test_auroc": 0.940263669520135,
+  "pooled": {
+    "n": 5999,
+    "prevalence": 0.47041173528921487,
+    "auroc": 0.8384552485339904,
+    "auprc": 0.8446473126204797,
+    "threshold": 0.42567333579063416,
+    "precision": 0.7369484674974739,
+    "recall": 0.7753366406803686,
+    "f1": 0.7556553272319115,
+    "auroc_95ci": [
+      0.8276049068238611,
+      0.8483766697202443
+    ],
+    "auprc_95ci": [
+      0.8325298323348065,
+      0.856254472155804
+    ]
+  },
+  "per_month": [
+    {
+      "n": 1000,
+      "prevalence": 0.517,
+      "auroc": 0.8824921609380445,
+      "auprc": 0.887972035113644,
+      "threshold": 0.42567333579063416,
+      "precision": 0.7858407079646018,
+      "recall": 0.8588007736943907,
+      "f1": 0.8207024029574861,
+      "auroc_95ci": [
+        0.8622586766207087,
+        0.9018460659047347
+      ],
+      "month": "2025-01",
+      "removed_overlap_with_training": 0
+    },
+    {
+      "n": 1000,
+      "prevalence": 0.462,
+      "auroc": 0.8138266628043579,
+      "auprc": 0.823994780811155,
+      "threshold": 0.42567333579063416,
+      "precision": 0.7120315581854043,
+      "recall": 0.7813852813852814,
+      "f1": 0.7450980392156863,
+      "auroc_95ci": [
+        0.7841664894645378,
+        0.8400174249062831
+      ],
+      "month": "2025-02",
+      "removed_overlap_with_training": 0
+    },
+    {
+      "n": 1000,
+      "prevalence": 0.356,
+      "auroc": 0.7870315444204062,
+      "auprc": 0.7545039262544878,
+      "threshold": 0.42567333579063416,
+      "precision": 0.5516483516483517,
+      "recall": 0.7050561797752809,
+      "f1": 0.6189889025893958,
+      "auroc_95ci": [
+        0.755321496011439,
+        0.816707937247762
+      ],
+      "month": "2025-03",
+      "removed_overlap_with_training": 0
+    },
+    {
+      "n": 1000,
+      "prevalence": 0.605,
+      "auroc": 0.829915263102835,
+      "auprc": 0.8891085075061576,
+      "threshold": 0.42567333579063416,
+      "precision": 0.8278985507246377,
+      "recall": 0.7553719008264462,
+      "f1": 0.7899740708729472,
+      "auroc_95ci": [
+        0.8048549928865583,
+        0.8551509496744087
+      ],
+      "month": "2025-04",
+      "removed_overlap_with_training": 0
+    },
+    {
+      "n": 999,
+      "prevalence": 0.6246246246246246,
+      "auroc": 0.7843888888888888,
+      "auprc": 0.8656793349568349,
+      "threshold": 0.42567333579063416,
+      "precision": 0.7959183673469388,
+      "recall": 0.75,
+      "f1": 0.7722772277227723,
+      "auroc_95ci": [
+        0.7542850475868927,
+        0.8128890467126118
+      ],
+      "month": "2025-05",
+      "removed_overlap_with_training": 0
+    },
+    {
+      "n": 1000,
+      "prevalence": 0.258,
+      "auroc": 0.9062689358323409,
+      "auprc": 0.8422531537773497,
+      "threshold": 0.42567333579063416,
+      "precision": 0.6854304635761589,
+      "recall": 0.8023255813953488,
+      "f1": 0.7392857142857143,
+      "auroc_95ci": [
+        0.8804181878221758,
+        0.9302496244379147
+      ],
+      "month": "2025-06",
+      "removed_overlap_with_training": 0
+    }
+  ]
 }

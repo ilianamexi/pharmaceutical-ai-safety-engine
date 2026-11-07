@@ -59,3 +59,8 @@ nlp:
   model_name: "dmis-lab/biobert-v1.1"
   max_length: 128
   batch_size: 32
+
+temporal:
+  # Months after the training window used for temporal validation (YYYYMM).
+  months: ["202501", "202502", "202503", "202504", "202505", "202506"]
+  reports_per_month: 1000   # fetched as 4 windows of 250 spread across each month
